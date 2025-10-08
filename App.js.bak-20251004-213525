@@ -1,0 +1,52 @@
+﻿import React, { useEffect, useState } from "react";
+import { SafeAreaView, View, Text } from "react-native";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./services/firebaseConfig";
+import AthleteHome from "./screens/AthleteHome";
+
+function Placeholder({ title }) {
+  return (
+    <View style={{ flex:1, alignItems:"center", justifyContent:"center" }}>
+      <Text style={{ fontSize:22, fontWeight:"800" }}>{title}</Text>
+      <Text style={{ color:"#666", marginTop:6 }}>Écran en cours de construction</Text>
+    </View>
+  );
+}
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState("athlete"); // force athlete pour ton test
+  const [subTab, setSubTab] = useState("calendar");
+
+  useEffect(() => {
+    const sub = onAuthStateChanged(auth, u => setUser(u));
+    return () => sub && sub();
+  }, []);
+
+  if (!user) {
+    return (
+      <SafeAreaView style={{ flex:1, alignItems:"center", justifyContent:"center" }}>
+        <Text>Connecte-toi depuis la landing (non incluse ici).</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (role === "athlete") {
+    return (
+      <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+        {subTab === "calendar" && (
+          <AthleteHome activeTab={subTab} onNavigate={setSubTab} />
+        )}
+        {subTab === "home" && <Placeholder title="Accueil" />}
+        {subTab === "reports" && <Placeholder title="Rapports" />}
+        {subTab === "menu" && <Placeholder title="Menu" />}
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={{ flex:1, alignItems:"center", justifyContent:"center" }}>
+      <Text>Rôle non géré dans ce patch.</Text>
+    </SafeAreaView>
+  );
+}

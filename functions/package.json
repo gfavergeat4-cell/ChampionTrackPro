@@ -1,0 +1,14 @@
+{
+  "name": "functions",
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "type": "commonjs",
+  "dependencies": {
+    "championtrackpro": "file:..",
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^4.6.0",
+    "node-fetch": "2"
+  }
+}

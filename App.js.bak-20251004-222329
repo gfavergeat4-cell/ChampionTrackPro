@@ -1,0 +1,103 @@
+﻿import React, { useEffect, useState } from "react";
+import { SafeAreaView, View, ActivityIndicator } from "react-native";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "./services/firebaseConfig";
+import Landing from "./screens/Landing";
+import AdminHome from "./screens/AdminHome";
+import CoachHome from "./screens/CoachHome";
+import AthleteHome from "./screens/AthleteHome";
+import { getUserMeta } from "./services/roles";
+import { isAdminUser } from "./services/roles";
+
+export default function App() {
+  const [boot, setBoot] = useState(true);
+  const [user, setUser] = useState(null);
+  const [route, setRoute] = useState({ role: null, teamId: null });
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      setUser(u);
+      if (!u) {
+        setRoute({ role: null, teamId: null });
+        setBoot(false);
+        return;
+      }
+      // 1) Admin d'abord
+      try {
+        if (await isAdminUser(u.uid)) {
+          setRoute({ role: "admin", teamId: null });
+          setBoot(false);
+          return;
+        }
+      } catch {}
+
+      // 2) Sinon lit le méta utilisateur (role + teamId)
+      try {
+        const meta = await getUserMeta(u.uid);
+        if (meta?.role) {
+          setRoute({ role: meta.role, teamId: meta.teamId ?? null });
+        } else {
+          // pas de rôle : on reste sur Landing pour le setup
+          setRoute({ role: null, teamId: null });
+        }
+      } catch {
+        setRoute({ role: null, teamId: null });
+      }
+      setBoot(false);
+    });
+    return () => unsub();
+  }, []);
+
+  const handleLogout = async () => {
+    try { await signOut(auth); } catch {}
+    setRoute({ role: null, teamId: null });
+  };
+
+  if (boot) {
+    return (
+      <SafeAreaView style={{ flex:1, alignItems:"center", justifyContent:"center" }}>
+        <ActivityIndicator />
+      </SafeAreaView>
+    );
+  }
+
+  // Non connecté OU pas de rôle -> Landing
+  if (!user || !route.role) {
+    return (
+      <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+        <Landing onRouted={(role, teamId)=>setRoute({ role, teamId: teamId ?? null })} />
+      </SafeAreaView>
+    );
+  }
+
+  if (route.role === "admin") {
+    return (
+      <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+        <AdminHome onLogout={handleLogout} />
+      </SafeAreaView>
+    );
+  }
+
+  if (route.role === "coach") {
+    return (
+      <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+        <CoachHome teamId={route.teamId} onLogout={handleLogout} />
+      </SafeAreaView>
+    );
+  }
+
+  if (route.role === "athlete") {
+    return (
+      <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+        <AthleteHome teamId={route.teamId} onLogout={handleLogout} />
+      </SafeAreaView>
+    );
+  }
+
+  // fallback
+  return (
+    <SafeAreaView style={{ flex:1, backgroundColor:"#fff" }}>
+      <View />
+    </SafeAreaView>
+  );
+}
