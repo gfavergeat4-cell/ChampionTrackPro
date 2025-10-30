@@ -1,0 +1,44 @@
+﻿import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
+import { Landing as StitchLanding } from "../src/stitch_components";
+
+export default function Landing() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSignIn() {
+    try {
+      const mail = String(email || "").trim();
+      const pass = String(password || "");
+      if (!mail || !pass) {
+        alert("");
+        return;
+      }
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, mail, pass);
+      // Navigation will be handled by AuthGate
+    } catch (e) {
+      const msg = e?.code ? (e.code + " â€“ " + (e.message || "")) : (e.message || String(e));
+      console.log("[LOGIN] error:", e);
+      alert("Erreur de connexion : " + msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <StitchLanding 
+      email={email}
+      setEmail={setEmail}
+      password={password}
+      setPassword={setPassword}
+      onLogin={handleSignIn}
+      onNavigateToRegister={() => navigation.navigate("Register")}
+      loading={loading}
+    />
+  );
+}

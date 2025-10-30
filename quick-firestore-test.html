@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Firestore - Événements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1A1A2E;
+            color: #E0E0E0;
+        }
+        .test-section {
+            background: #2B2E36;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #4A67FF;
+        }
+        .success { color: #00E0FF; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        button {
+            background: linear-gradient(135deg, #4A67FF, #00E0FF);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.8; }
+        pre {
+            background: #0E1528;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .event-item {
+            background: #0E1528;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #00E0FF;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Firestore - Événements</h1>
+    
+    <div class="test-section">
+        <h2>1. Test de connexion Firebase</h2>
+        <button onclick="testConnection()">Tester la connexion</button>
+        <div id="connection-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Lister les teams</h2>
+        <button onclick="listTeams()">Lister les teams</button>
+        <div id="teams-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Lister les événements</h2>
+        <button onclick="listEvents()">Lister les événements</button>
+        <div id="events-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test de filtrage (Mardi/Jeudi)</h2>
+        <button onclick="testFiltering()">Tester le filtrage</button>
+        <div id="filter-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Test ICS Import</h2>
+        <button onclick="testICS()">Tester l'ICS</button>
+        <div id="ics-result"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvQZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8Q",
+            authDomain: "championtrackpro.firebaseapp.com",
+            projectId: "championtrackpro",
+            storageBucket: "championtrackpro.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.testConnection = async function() {
+            const resultDiv = document.getElementById('connection-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Test de connexion...</p>';
+                const testCollection = collection(db, 'test');
+                await getDocs(testCollection);
+                resultDiv.innerHTML = '<p class="success">✅ Connexion Firebase réussie!</p>';
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.listTeams = async function() {
+            const resultDiv = document.getElementById('teams-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Récupération des teams...</p>';
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                
+                let html = `<p class="success">✅ ${teamsSnap.size} team(s) trouvé(s)</p>`;
+                
+                teamsSnap.docs.forEach((teamDoc, index) => {
+                    const teamData = teamDoc.data();
+                    html += `
+                        <div class="event-item">
+                            <strong>Team ${index + 1}:</strong> ${teamDoc.id}<br>
+                            <strong>Name:</strong> ${teamData.name || 'N/A'}<br>
+                            <strong>ICS URL:</strong> ${teamData.icsUrl || 'N/A'}<br>
+                            <strong>TimeZone:</strong> ${teamData.timeZone || 'N/A'}<br>
+                            <strong>Calendar Imported:</strong> ${teamData.calendarImported || false}
+                        </div>
+                    `;
+                });
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.listEvents = async function() {
+            const resultDiv = document.getElementById('events-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Récupération des événements...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                const eventsSnap = await getDocs(collection(db, 'teams', teamId, 'events'));
+                
+                let html = `<p class="success">✅ ${eventsSnap.size} événement(s) trouvé(s) pour le team ${teamId}</p>`;
+                
+                if (eventsSnap.size > 0) {
+                    eventsSnap.docs.forEach((eventDoc, index) => {
+                        const eventData = eventDoc.data();
+                        const eventDate = new Date(eventData.startUTC);
+                        const dayOfWeek = eventDate.getDay();
+                        const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+                        const isTuesdayOrThursday = dayOfWeek === 2 || dayOfWeek === 4;
+                        
+                        html += `
+                            <div class="event-item" style="border-left-color: ${isTuesdayOrThursday ? '#00E0FF' : '#ff6b6b'};">
+                                <strong>Événement ${index + 1}:</strong> ${eventData.summary || 'No title'}<br>
+                                <strong>Date:</strong> ${eventDate.toLocaleString()}<br>
+                                <strong>Jour:</strong> ${dayName} (${dayOfWeek})<br>
+                                <strong>startUTC:</strong> ${eventData.startUTC}<br>
+                                <strong>timeZone:</strong> ${eventData.timeZone}<br>
+                                <strong>Mardi/Jeudi:</strong> ${isTuesdayOrThursday ? '✅ Oui' : '❌ Non'}
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<p class="warning">⚠️ Aucun événement trouvé pour ce team</p>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.testFiltering = async function() {
+            const resultDiv = document.getElementById('filter-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Test du filtrage...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                const eventsSnap = await getDocs(collection(db, 'teams', teamId, 'events'));
+                
+                // Filtrer pour mardi et jeudi
+                const tuesdayThursdayEvents = eventsSnap.docs.filter(eventDoc => {
+                    const eventData = eventDoc.data();
+                    const eventDate = new Date(eventData.startUTC);
+                    const dayOfWeek = eventDate.getDay();
+                    return dayOfWeek === 2 || dayOfWeek === 4; // Mardi ou jeudi
+                });
+                
+                let html = `<p class="success">✅ ${tuesdayThursdayEvents.length} événement(s) Mardi/Jeudi trouvé(s)</p>`;
+                
+                if (tuesdayThursdayEvents.length > 0) {
+                    tuesdayThursdayEvents.forEach((eventDoc, index) => {
+                        const eventData = eventDoc.data();
+                        const eventDate = new Date(eventData.startUTC);
+                        html += `
+                            <div class="event-item">
+                                <strong>${index + 1}. ${eventData.summary}</strong><br>
+                                <strong>Date:</strong> ${eventDate.toLocaleString()}<br>
+                                <strong>Heure:</strong> ${eventDate.toLocaleTimeString()}
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<p class="warning">⚠️ Aucun événement Mardi/Jeudi trouvé</p>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.testICS = async function() {
+            const resultDiv = document.getElementById('ics-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Test de l\'ICS...</p>';
+                
+                const icsUrl = 'https://calendar.google.com/calendar/ical/gfavergeat4%40gmail.com/public/basic.ics';
+                const response = await fetch(icsUrl);
+                
+                if (response.ok) {
+                    const icsContent = await response.text();
+                    const eventCount = (icsContent.match(/BEGIN:VEVENT/g) || []).length;
+                    
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ ICS accessible: ${icsContent.length} caractères</p>
+                        <p class="success">📅 ${eventCount} événement(s) trouvé(s) dans l'ICS</p>
+                        <pre>${icsContent.substring(0, 500)}...</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erreur ICS: ${response.status} ${response.statusText}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
+

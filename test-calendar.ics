@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ChampionTrackPro//Test Calendar//EN
+BEGIN:VEVENT
+UID:test-event-1@championtrackpro.com
+DTSTART:20241215T080000Z
+DTEND:20241215T093000Z
+SUMMARY:Entraînement matinal
+DESCRIPTION:Session d'entraînement matinal - Endurance et technique
+LOCATION:Stade principal
+END:VEVENT
+BEGIN:VEVENT
+UID:test-event-2@championtrackpro.com
+DTSTART:20241216T100000Z
+DTEND:20241216T110000Z
+SUMMARY:Entraînement technique
+DESCRIPTION:Focus sur la technique et la coordination
+LOCATION:Terrain d'entraînement
+END:VEVENT
+BEGIN:VEVENT
+UID:test-event-3@championtrackpro.com
+DTSTART:20241217T180000Z
+DTEND:20241217T190000Z
+SUMMARY:Match d'entraînement
+DESCRIPTION:Match de préparation contre l'équipe B
+LOCATION:Stade principal
+END:VEVENT
+END:VCALENDAR

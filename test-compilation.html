@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Compilation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1A1A2E;
+            color: #E0E0E0;
+        }
+        .test-section {
+            background: #2B2E36;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #4A67FF;
+        }
+        .success { color: #00E0FF; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        button {
+            background: linear-gradient(135deg, #4A67FF, #00E0FF);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover { opacity: 0.8; }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        pre {
+            background: #0E1528;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Compilation</h1>
+    
+    <div class="test-section">
+        <h2>1. Vérifier l'état de l'application</h2>
+        <button onclick="checkAppStatus()">Vérifier l'état</button>
+        <div id="app-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Tester l'import du calendrier</h2>
+        <button onclick="testCalendarImport()">Tester l'import</button>
+        <div id="import-status"></div>
+    </div>
+
+    <script>
+        function checkAppStatus() {
+            const statusDiv = document.getElementById('app-status');
+            statusDiv.innerHTML = '<p class="warning">🔄 Vérification en cours...</p>';
+            
+            // Test de base
+            try {
+                statusDiv.innerHTML = `
+                    <p class="success">✅ Page de test chargée</p>
+                    <p class="success">✅ JavaScript fonctionne</p>
+                    <p class="warning">⚠️ Vérifiez que l'application Expo fonctionne sur http://localhost:8109</p>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        }
+
+        function testCalendarImport() {
+            const statusDiv = document.getElementById('import-status');
+            statusDiv.innerHTML = '<p class="warning">🔄 Test d\'import en cours...</p>';
+            
+            // Simuler un test d'import
+            setTimeout(() => {
+                statusDiv.innerHTML = `
+                    <p class="success">✅ Test d'import simulé</p>
+                    <p class="warning">⚠️ Utilisez l'outil import-calendar-simple.html pour l'import réel</p>
+                `;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+

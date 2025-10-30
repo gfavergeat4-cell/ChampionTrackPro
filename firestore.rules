@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function me() { return get(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function myRole() { return signedIn() ? (me().data.role) : null; } // 'admin'|'coach'|'athlete' en minuscule
+    function myTeamId() { return signedIn() ? (me().data.teamId) : null; }
+
+    function isAdmin()   { return signedIn() && myRole() == "admin"; }
+    function isCoach()   { return signedIn() && myRole() == "coach"; }
+    function isAthlete() { return signedIn() && myRole() == "athlete"; }
+
+    function isTeamMember(teamId) {
+      return signedIn() && myTeamId() == teamId;
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (
+        uid == request.auth.uid ||
+        isAdmin() ||
+        (isCoach() && myTeamId() == resource.data.teamId)
+      );
+
+      allow create: if signedIn() && (uid == request.auth.uid || isAdmin());
+      // Permettre la création du document utilisateur lors de l'inscription
+      allow create: if request.auth != null && uid == request.auth.uid;
+
+      // Empêcher l'auto-élévation de privilèges (role/teamId intouchables par soi-même)
+      allow update: if signedIn() && (
+        isAdmin() ||
+        (uid == request.auth.uid &&
+         request.resource.data.role == resource.data.role &&
+         request.resource.data.teamId == resource.data.teamId)
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    match /teams/{teamId} {
+      // Permettre la lecture des codes d'accès sans authentification (pour l'inscription)
+      allow read: if isAdmin() || isTeamMember(teamId) || (isCoach() && isTeamMember(teamId)) || 
+                     (request.auth == null && resource.data.keys().hasAny(['codes']));
+      allow create, update, delete: if isAdmin();
+      // Permettre l'incrémentation du compteur de membres lors de l'inscription
+      allow update: if isAdmin() || (signedIn() && request.resource.data.members == resource.data.members + 1);
+
+      match /events/{eventId} {
+        allow read: if isAdmin() || isTeamMember(teamId) || (isCoach() && isTeamMember(teamId));
+        allow create, update, delete: if isAdmin();
+
+        match /responses/{responseId} {
+          function eventTeamId() {
+            return get(/databases/$(database)/documents/teams/$(teamId)/events/$(eventId)).data.teamId;
+          }
+
+          allow read: if
+            isAdmin() ||
+            (isCoach() && isTeamMember(teamId)) ||
+            (signedIn() && resource.data.userId == request.auth.uid);
+
+          allow create: if signedIn()
+            && isAthlete()
+            && request.resource.data.userId == request.auth.uid
+            && eventTeamId() == myTeamId();
+
+          allow update, delete: if isAdmin();
+        }
+      }
+    }
+  }
+}

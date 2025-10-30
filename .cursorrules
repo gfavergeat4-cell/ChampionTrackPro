@@ -1,0 +1,24 @@
+﻿# ChampionTrackPro — Cursor Rules
+
+## Design/DA
+- Dark lab cockpit; glassmorphism layers; soft cyan/blue glow.
+- Colors: #0E1528 (bg), #4A67FF (accent), #00E0FF (data), #FFFFFF (text), #2B2E36 (surface).
+- UI font: Inter/SF Pro. Brand font (Cinzel-like) ONLY in the wordmark.
+- Buttons: gradient cyan→blue, generous radii, soft shadows.
+- Tagline: THE TRAINING INTELLIGENCE.
+
+## Structure
+- Expo + React Native + TypeScript.
+- Firebase v9 modular; single init in src/lib/firebase.ts.
+- All new code under src/: app, components, features, lib, theme, types, stitch_components.
+- Reuse existing config; no duplicate Firebase init.
+
+## Scope (MVP)
+- Roles: admin, athlete.
+- Admin: imports team schedule (ICS), can create events for team.
+- Athlete: sees team events, submits personal questionnaire per event (3 sliders).
+- Admin reads data; charts later.
+
+## Quality
+- Type-safe, no any, minimal deps. Keep logic and navigation intact.
+- Respect tokens from src/theme/tokens.ts.

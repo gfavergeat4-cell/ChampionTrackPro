@@ -1,0 +1,76 @@
+import React, { useState } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { Text, TextInput, TouchableOpacity, Alert, SafeAreaView, ActivityIndicator } from "react-native";
+import { signInWithEmailAndPassword, signInAnonymously } from "firebase/auth";
+import { auth, db } from "../firebaseConfig";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+
+async function ensureUserDoc(u){
+  try{
+    if(!u) return;
+    const ref = doc(db, "users", u.uid);
+    const snap = await getDoc(ref);
+    if(!snap.exists()){
+      await setDoc(ref, { email: u.email ?? null, role: "athlete", createdAt: serverTimestamp() }, { merge:true });
+    }
+  }catch(e){ console.error("ensureUserDoc error", e); }
+}
+
+export default function Login({ navigation }){
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const goHome = ()=> navigation.reset({ index:0, routes:[{ name:"Home" }] });
+
+  const doLogin = async ()=>{
+    try{
+      setLoading(true);
+      const cred = await signInWithEmailAndPassword()
+  .then((cred) => {
+    try {
+      const nav = (typeof navigation !== 'undefined') ? navigation : (typeof useNavigation === 'function' ? useNavigation() : null);
+      if (nav && nav.reset) { nav.reset({ index: 0, routes: [{ name: 'App' }] }); }
+    } catch(e) { console.log('nav.reset error', e); }
+    return cred;
+  }), password);
+      await ensureUserDoc(cred.user);
+      goHome();
+    }catch(e){
+      console.error("Login error:", e);
+      Alert.alert("Connexion", e?.message ?? String(e));
+    }finally{ setLoading(false); }
+  };
+
+  const doAnon = async ()=>{
+    try{
+      setLoading(true);
+      const cred = await signInAnonymously(auth);
+      await ensureUserDoc(cred.user);
+      goHome();
+    }catch(e){
+      console.error("Anon error:", e);
+      Alert.alert("Connexion anonyme", e?.message ?? String(e));
+    }finally{ setLoading(false); }
+  };
+
+  return (
+    <SafeAreaView style={{ flex:1, backgroundColor:"#fff", padding:16 }}>
+      <Text style={{ fontSize:22, fontWeight:"800", marginBottom:12 }}>Connexion</Text>
+      <TextInput placeholder="Email" autoCapitalize="none" keyboardType="email-address"
+        value={email} onChangeText={setEmail}
+        style={{ borderWidth:1, borderColor:"#e5e7eb", borderRadius:8, padding:12, marginBottom:8 }}/>
+      <TextInput placeholder="Mot de passe" secureTextEntry
+        value={password} onChangeText={setPassword}
+        style={{ borderWidth:1, borderColor:"#e5e7eb", borderRadius:8, padding:12, marginBottom:12 }}/>
+      <TouchableOpacity onPress={doLogin} disabled={loading || !email || !password}
+        style={{ backgroundColor: (!email || !password) ? "#9ca3af" : "#111827", padding:14, borderRadius:10, marginBottom:10, alignItems:"center" }}>
+        {loading ? <ActivityIndicator color="#fff"/> : <Text style={{ color:"#fff", fontWeight:"700" }}>Se connecter</Text>}
+      </TouchableOpacity>
+      <TouchableOpacity onPress={doAnon} disabled={loading}
+        style={{ backgroundColor:"#e5e7eb", padding:12, borderRadius:10, alignItems:"center" }}>
+        <Text style={{ fontWeight:"700", color:"#111827" }}>Connexion anonyme (test)</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+}

@@ -1,0 +1,12 @@
+﻿# Secrets / clés
+serviceAccountKey*.json
+google-services.json
+GoogleService-Info.plist
+.env
+.env.*
+*.keystore
+*.p8
+# Node / build
+node_modules
+dist
+build

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHAMPIONTRACKPRO - Create Account</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Inter:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+        :root {
+            --gradient-cyan: #00E0FF;
+            --gradient-blue: #4A67FF;
+            --gray-light: #BFC5D9;
+            --graphite-dark: #1A1D25;
+            --graphite-inactive: #2B2E36;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0E1528;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .logo-glow {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+        .logo-pro-glow {
+            color: var(--gradient-cyan);
+            text-shadow: 0 0 15px var(--gradient-cyan);
+        }
+        .tagline {
+            color: #E6ECF9;
+            text-shadow: 0 0 12px rgba(0, 224, 255, 0.35);
+            letter-spacing: 0.3em;
+            position: relative;
+            display: inline-block;
+        }
+        .tagline::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -8px;
+            height: 1px;
+            width: 100%;
+            background-color: rgba(230, 236, 249, 0.15);
+        }
+        .role-selector-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        .role-button {
+            padding: 12px 32px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            border-radius: 14px;
+        }
+        .role-button.active {
+            background-image: linear-gradient(to right, var(--gradient-cyan), var(--gradient-blue));
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 224, 255, 0.3);
+        }
+        .role-button.inactive {
+            background-color: var(--graphite-dark);
+            color: #9CA3AF;
+        }
+        .form-field {
+            background-color: rgba(26, 32, 44, 0.5);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            height: 52px;
+            color: white;
+            font-size: 16px;
+            transition: all 200ms ease-in-out;
+        }
+        .form-field::placeholder {
+            color: #718096;
+        }
+        .form-field:focus {
+            outline: none;
+            border-color: rgba(0, 224, 255, 0.5);
+            box-shadow: 0 0 10px 2px rgba(0, 224, 255, 0.25);
+        }
+        .btn-main-gradient {
+            background-image: linear-gradient(to right, var(--gradient-cyan), var(--gradient-blue));
+            border-radius: 14px;
+            box-shadow: 0 4px 20px 0 rgba(0, 224, 255, 0.25);
+        }
+        .login-link-glow {
+           color: var(--gradient-cyan);
+           text-shadow: 0 0 8px rgba(0, 224, 255, 0.7);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-white">
+<div class="flex flex-col items-center justify-center min-h-screen p-6">
+<div class="w-full max-w-sm mx-auto text-center">
+<header class="mt-14 mb-8">
+<h1 class="font-cinzel text-[32px] font-bold logo-glow">ChampionTrack<span class="logo-pro-glow">PRO</span></h1>
+<p class="tagline text-[12px] font-light mt-2.5 uppercase w-[80%] mx-auto whitespace-nowrap">THE TRAINING INTELLIGENCE</p>
+</header>
+<main class="w-full mt-[25px]">
+<div class="role-selector-container mb-6">
+<button class="role-button active">ATHLETE</button>
+<button class="role-button inactive">COACH</button>
+</div>
+<form class="space-y-4">
+<div>
+<input class="form-field w-full px-4" id="access-code" placeholder="Team Access Code" type="text"/>
+</div>
+<input class="form-field w-full px-4" id="full-name" placeholder="Full Name" type="text"/>
+<input class="form-field w-full px-4" id="email" placeholder="Email" type="email"/>
+<div class="relative">
+<input class="form-field w-full px-4 pr-10" id="password" placeholder="Password" type="password"/>
+<button class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400" type="button">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="pt-6">
+<button class="w-full btn-main-gradient text-white font-bold uppercase tracking-wider py-4 text-base hover:opacity-90 active:scale-[0.98] transition-all duration-200" type="submit">
+                        CREATE ACCOUNT
+                    </button>
+</div>
+</form>
+<footer class="mt-8">
+<p class="text-sm text-gray-300">
+                    Already have an account? <a class="font-medium login-link-glow hover:underline" href="#">Log In</a>
+</p>
+</footer>
+</main>
+</div>
+</div>
+</body></html>

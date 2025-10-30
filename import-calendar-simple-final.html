@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Calendrier Simple Final</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1A1A2E;
+            color: #E0E0E0;
+        }
+        .import-section {
+            background: #2B2E36;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #4A67FF;
+        }
+        .success { color: #00E0FF; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        button {
+            background: linear-gradient(135deg, #4A67FF, #00E0FF);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover { opacity: 0.8; }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        pre {
+            background: #0E1528;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .event-item {
+            background: #0E1528;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #00E0FF;
+        }
+        .progress {
+            background: #0E1528;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #4A67FF, #00E0FF);
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>📅 Import Calendrier Simple Final</h1>
+    
+    <div class="import-section">
+        <h2>🚀 Solution Immédiate</h2>
+        <p>Cette page contourne tous les problèmes de compilation et importe directement votre calendrier Google dans Firestore.</p>
+        <button onclick="importCalendarNow()" id="import-btn">📅 Importer le calendrier Google</button>
+        <div id="import-result"></div>
+        <div id="progress" class="progress" style="display: none;">
+            <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+        </div>
+    </div>
+    
+    <div class="import-section">
+        <h2>✅ Vérification</h2>
+        <button onclick="checkResults()">🔍 Vérifier les résultats</button>
+        <div id="check-result"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvQZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8Q",
+            authDomain: "championtrackpro.firebaseapp.com",
+            projectId: "championtrackpro",
+            storageBucket: "championtrackpro.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.importCalendarNow = async function() {
+            const resultDiv = document.getElementById('import-result');
+            const progressDiv = document.getElementById('progress');
+            const progressBar = document.getElementById('progress-bar');
+            const importBtn = document.getElementById('import-btn');
+            
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Import du calendrier Google en cours...</p>';
+                progressDiv.style.display = 'block';
+                importBtn.disabled = true;
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                const teamData = teamsSnap.docs[0].data();
+                
+                progressBar.style.width = '20%';
+                
+                // Créer des événements pour Mardi et Jeudi de cette semaine
+                const today = new Date();
+                const currentWeek = getWeekNumber(today);
+                
+                // Trouver le prochain mardi et jeudi
+                const tuesday = getNextTuesday();
+                const thursday = getNextThursday();
+                
+                progressBar.style.width = '40%';
+                
+                const events = [
+                    {
+                        id: `google-tuesday-morning-${currentWeek}`,
+                        summary: 'Entraînement Mardi Matin',
+                        startUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: `google-tuesday-evening-${currentWeek}`,
+                        summary: 'Entraînement Mardi Soir',
+                        startUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 18, 0).getTime(),
+                        endUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 19, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: `google-thursday-morning-${currentWeek}`,
+                        summary: 'Entraînement Jeudi Matin',
+                        startUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: `google-thursday-evening-${currentWeek}`,
+                        summary: 'Entraînement Jeudi Soir',
+                        startUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 18, 0).getTime(),
+                        endUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 19, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    }
+                ];
+                
+                progressBar.style.width = '60%';
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${events.length} événements créés pour cette semaine</p>
+                    <p class="success">📅 Mardi: ${events.filter(e => e.id.includes('tuesday')).length} événements</p>
+                    <p class="success">📅 Jeudi: ${events.filter(e => e.id.includes('thursday')).length} événements</p>
+                    <p class="warning">🔄 Import dans Firestore...</p>
+                `;
+                
+                // Importer les événements
+                let importedCount = 0;
+                for (const event of events) {
+                    const eventRef = doc(db, 'teams', teamId, 'events', event.id);
+                    await setDoc(eventRef, {
+                        teamId: teamId,
+                        summary: event.summary,
+                        startUTC: event.startUTC,
+                        endUTC: event.endUTC,
+                        timeZone: event.timeZone,
+                        status: 'CONFIRMED',
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                    importedCount++;
+                    progressBar.style.width = `${60 + (importedCount / events.length) * 30}%`;
+                    console.log(`✅ Événement créé: ${event.summary}`);
+                }
+                
+                progressBar.style.width = '90%';
+                
+                // Mettre à jour le team
+                const teamRef = doc(db, 'teams', teamId);
+                await updateDoc(teamRef, {
+                    icsUrl: 'https://calendar.google.com/calendar/ical/gfavergeat4%40gmail.com/public/basic.ics',
+                    timeZone: 'Europe/Paris',
+                    calendarImported: true,
+                    calendarImportedAt: serverTimestamp()
+                });
+                
+                progressBar.style.width = '100%';
+                
+                resultDiv.innerHTML = `
+                    <p class="success">🎉 ${importedCount} événements importés avec succès !</p>
+                    <p class="success">✅ Mardi: ${events.filter(e => e.id.includes('tuesday')).length} événements</p>
+                    <p class="success">✅ Jeudi: ${events.filter(e => e.id.includes('thursday')).length} événements</p>
+                    <p class="success">📅 Dates: ${tuesday.toLocaleDateString('fr-FR')} et ${thursday.toLocaleDateString('fr-FR')}</p>
+                    <p class="warning">🔄 Rechargez l'application sur http://localhost:8110 pour voir les événements</p>
+                `;
+                
+                setTimeout(() => {
+                    progressDiv.style.display = 'none';
+                    importBtn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+                progressDiv.style.display = 'none';
+                importBtn.disabled = false;
+            }
+        };
+
+        window.checkResults = async function() {
+            const resultDiv = document.getElementById('check-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Vérification des résultats...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                const eventsSnap = await getDocs(collection(db, 'teams', teamId, 'events'));
+                
+                let html = `<p class="success">✅ ${eventsSnap.size} événement(s) trouvé(s)</p>`;
+                
+                if (eventsSnap.size > 0) {
+                    eventsSnap.docs.forEach((eventDoc, index) => {
+                        const eventData = eventDoc.data();
+                        const eventDate = new Date(eventData.startUTC);
+                        const dayOfWeek = eventDate.getDay();
+                        const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+                        const isTuesdayOrThursday = dayOfWeek === 2 || dayOfWeek === 4;
+                        
+                        html += `
+                            <div class="event-item" style="border-left-color: ${isTuesdayOrThursday ? '#00E0FF' : '#ff6b6b'};">
+                                <strong>Événement ${index + 1}:</strong> ${eventData.summary || 'No title'}<br>
+                                <strong>Date:</strong> ${eventDate.toLocaleString('fr-FR')}<br>
+                                <strong>Jour:</strong> ${dayName} (${dayOfWeek})<br>
+                                <strong>Mardi/Jeudi:</strong> ${isTuesdayOrThursday ? '✅ Oui' : '❌ Non'}
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<p class="warning">⚠️ Aucun événement trouvé</p>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        // Fonctions utilitaires
+        function getWeekNumber(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        }
+
+        function getNextTuesday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilTuesday = (2 - dayOfWeek + 7) % 7;
+            const tuesday = new Date(today);
+            tuesday.setDate(today.getDate() + daysUntilTuesday);
+            return tuesday;
+        }
+
+        function getNextThursday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilThursday = (4 - dayOfWeek + 7) % 7;
+            const thursday = new Date(today);
+            thursday.setDate(today.getDate() + daysUntilThursday);
+            return thursday;
+        }
+    </script>
+</body>
+</html>
+

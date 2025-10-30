@@ -1,0 +1,46 @@
+﻿{
+    "modules":  [
+                    {
+                        "title":  "athlete_main_dashboard",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/athlete_main_dashboard",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/athlete_main_dashboard"
+                    },
+                    {
+                        "title":  "athlete_schedule_-_day_view_1",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/athlete_schedule_-_day_view_1",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/athlete_schedule_-_day_view_1"
+                    },
+                    {
+                        "title":  "athlete_schedule_-_week_view_2",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/athlete_schedule_-_week_view_2",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/athlete_schedule_-_week_view_2"
+                    },
+                    {
+                        "title":  "general_create_account_screen_-_full_2",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/general_create_account_screen_-_full_2",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/general_create_account_screen_-_full_2"
+                    },
+                    {
+                        "title":  "landing page",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/landing page",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/landing page"
+                    },
+                    {
+                        "title":  "login_screen_-_full_1",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/login_screen_-_full_1",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/login_screen_-_full_1"
+                    },
+                    {
+                        "title":  "training_questionnaire_-_pain=no",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/training_questionnaire_-_pain=no",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/training_questionnaire_-_pain=no"
+                    },
+                    {
+                        "title":  "training_questionnaire_-_pain=yes",
+                        "sourceDir":  "C:/Users/gabfa/ChampionTrackPro/cursor_context/stitch_welcome_to_championtrackpro/training_questionnaire_-_pain=yes",
+                        "destDir":  "C:/Users/gabfa/ChampionTrackPro/src/stitch_components/training_questionnaire_-_pain=yes"
+                    }
+                ],
+    "version":  "1.0",
+    "note":  "Mapping automatique des composants Google Stitch vers src/stitch_components/"
+}

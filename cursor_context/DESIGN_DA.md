@@ -1,0 +1,11 @@
+﻿# Design Guidelines (ChampionTrackPro)
+- Palette : 
+  - Background : #0E1528
+  - Accent Blue : #4A67FF
+  - Accent Cyan : #00E0FF
+  - Surface : #2B2E36
+  - Text : #FFFFFF
+- Style : Glassmorphism + Glow Cyan/Blue
+- Police : Inter (UI), Cinzel (logo)
+- Boutons : gradient cyan → blue, ombre douce
+- Formes : coins 12-24px, padding généreux

@@ -1,0 +1,102 @@
+﻿import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { signOut } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
+import { getMyPlanningThisWeek } from "../services/athlete";
+import { Button } from "../components/UI";
+
+export default function AthleteHome({ onLogout }) {
+  async function linkExternalCal() {
+    try {
+      const url = typeof window !== "undefined" ? window.prompt("Colle l’URL ICS publique (Google/Outlook/Autre) :") : null;
+      if (!url) return;
+      const res = await importExternalCalendar(url, { weeks: 8 });
+      alert(`Import terminé: ${res.createdOrUpdated} séance(s) ajoutée(s)/mise(s) à jour.`);
+      // Essaie de rafraîchir si une méthode de reload existe :
+      try { if (typeof loadWeek === "function") await loadWeek(); } catch(_) {}
+    } catch(e) {
+      console.error(e);
+      alert("Erreur import: " + (e.message || e));
+    }
+  }
+  const [planning, setPlanning] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        if (!auth.currentUser) return;
+        const data = await getMyPlanningThisWeek(auth.currentUser.uid);
+        setPlanning(data);
+      } catch (e) {
+        console.error("[AthleteHome] Erreur chargement planning:", e);
+      }
+    };
+    load();
+  }, []);
+
+  return (
+    <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <Text style={{ fontSize: 24, fontWeight: "700", marginBottom: 10 }}>
+        Planning de la semaine
+      </Text>
+
+      {planning.length === 0 && (
+        <Text style={{ textAlign: "center", color: "#888" }}>
+          Aucune séance programmée.
+        </Text>
+      )}
+
+      {planning.map((s, i) => (
+        <View
+          key={i}
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 12,
+            padding: 14,
+            marginBottom: 10,
+            shadowColor: "#000",
+            shadowOpacity: 0.05,
+            shadowRadius: 4,
+            elevation: 2,
+          }}
+        >
+          <Text style={{ fontWeight: "700" }}>{s.title}</Text>
+          <Text style={{ color: "#666" }}>
+            {s.date} • {s.time}
+          </Text>
+          <Button title="Répondre" onPress={() => alert("Questionnaire à venir")} />
+        </View>
+      ))}
+
+      <TouchableOpacity
+        onPress={() => signOut(auth).then(() => onLogout())}
+        style={{ marginTop: 20 }}
+      >
+        <Text style={{ color: "red", textAlign: "center" }}>Se déconnecter</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
+
+
+
+export default function AthleteHome({ onLogout }) {
+  async function handleImportCalendar() {
+    const url = prompt("Colle ici le lien ICS de ton calendrier (Google, Outlook, etc.) :");
+    if (!url) return;
+    try {
+      await importExternalCalendar(url);
+      alert("✅ Calendrier importé avec succès !");
+    } catch (e) {
+      alert("❌ Erreur lors de l'import : " + e.message);
+    }
+  }
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 22, fontWeight: 'bold' }}>Planning de la semaine</Text>
+      <Button title="Importer calendrier" onPress={handleImportCalendar} />
+    </View>
+  );
+}
+

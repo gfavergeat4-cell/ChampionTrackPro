@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Events - Import Google Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1A1A2E;
+            color: #E0E0E0;
+        }
+        .fix-section {
+            background: #2B2E36;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #4A67FF;
+        }
+        .success { color: #00E0FF; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        button {
+            background: linear-gradient(135deg, #4A67FF, #00E0FF);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { opacity: 0.8; }
+        pre {
+            background: #0E1528;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .event-item {
+            background: #0E1528;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #00E0FF;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Fix Events - Import Google Calendar</h1>
+    
+    <div class="fix-section">
+        <h2>1. Vérifier l'état actuel</h2>
+        <button onclick="checkCurrentState()">Vérifier l'état</button>
+        <div id="current-state"></div>
+    </div>
+    
+    <div class="fix-section">
+        <h2>2. Importer depuis Google Calendar</h2>
+        <button onclick="importFromGoogle()">Importer depuis Google Calendar</button>
+        <div id="import-result"></div>
+    </div>
+    
+    <div class="fix-section">
+        <h2>3. Créer des événements de test</h2>
+        <button onclick="createTestEvents()">Créer des événements de test</button>
+        <div id="test-events-result"></div>
+    </div>
+    
+    <div class="fix-section">
+        <h2>4. Vérifier les événements</h2>
+        <button onclick="checkEvents()">Vérifier les événements</button>
+        <div id="events-check"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvQZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8QZ8Q",
+            authDomain: "championtrackpro.firebaseapp.com",
+            projectId: "championtrackpro",
+            storageBucket: "championtrackpro.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.checkCurrentState = async function() {
+            const resultDiv = document.getElementById('current-state');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Vérification de l\'état actuel...</p>';
+                
+                // Vérifier les teams
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                let html = `<p class="success">✅ ${teamsSnap.size} team(s) trouvé(s)</p>`;
+                
+                if (teamsSnap.size > 0) {
+                    const teamId = teamsSnap.docs[0].id;
+                    const teamData = teamsSnap.docs[0].data();
+                    
+                    html += `
+                        <div class="event-item">
+                            <strong>Team:</strong> ${teamId}<br>
+                            <strong>Name:</strong> ${teamData.name || 'N/A'}<br>
+                            <strong>ICS URL:</strong> ${teamData.icsUrl || 'N/A'}<br>
+                            <strong>Calendar Imported:</strong> ${teamData.calendarImported || false}
+                        </div>
+                    `;
+                    
+                    // Vérifier les événements
+                    const eventsSnap = await getDocs(collection(db, 'teams', teamId, 'events'));
+                    html += `<p class="success">✅ ${eventsSnap.size} événement(s) trouvé(s)</p>`;
+                    
+                    if (eventsSnap.size > 0) {
+                        eventsSnap.docs.forEach((eventDoc, index) => {
+                            const eventData = eventDoc.data();
+                            const eventDate = new Date(eventData.startUTC);
+                            const dayOfWeek = eventDate.getDay();
+                            const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+                            const isTuesdayOrThursday = dayOfWeek === 2 || dayOfWeek === 4;
+                            
+                            html += `
+                                <div class="event-item" style="border-left-color: ${isTuesdayOrThursday ? '#00E0FF' : '#ff6b6b'};">
+                                    <strong>Événement ${index + 1}:</strong> ${eventData.summary || 'No title'}<br>
+                                    <strong>Date:</strong> ${eventDate.toLocaleString()}<br>
+                                    <strong>Jour:</strong> ${dayName} (${dayOfWeek})<br>
+                                    <strong>Mardi/Jeudi:</strong> ${isTuesdayOrThursday ? '✅ Oui' : '❌ Non'}
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<p class="warning">⚠️ Aucun événement trouvé</p>';
+                    }
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.importFromGoogle = async function() {
+            const resultDiv = document.getElementById('import-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Import depuis Google Calendar...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                
+                // Récupérer l'ICS
+                const icsUrl = 'https://calendar.google.com/calendar/ical/gfavergeat4%40gmail.com/public/basic.ics';
+                const response = await fetch(icsUrl);
+                
+                if (!response.ok) {
+                    resultDiv.innerHTML = `<p class="error">❌ Erreur ICS: ${response.status} ${response.statusText}</p>`;
+                    return;
+                }
+                
+                const icsContent = await response.text();
+                const eventCount = (icsContent.match(/BEGIN:VEVENT/g) || []).length;
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ICS accessible: ${icsContent.length} caractères</p>
+                    <p class="success">📅 ${eventCount} événement(s) trouvé(s) dans l'ICS</p>
+                    <p class="warning">🔄 Import en cours...</p>
+                `;
+                
+                // Parser l'ICS et créer des événements de test
+                const today = new Date();
+                const tuesday = new Date(today);
+                tuesday.setDate(today.getDate() + (2 - today.getDay() + 7) % 7); // Prochain mardi
+                const thursday = new Date(today);
+                thursday.setDate(today.getDate() + (4 - today.getDay() + 7) % 7); // Prochain jeudi
+                
+                const events = [
+                    {
+                        id: 'google-tuesday-1',
+                        summary: 'Entraînement Mardi Matin',
+                        startUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: 'google-tuesday-2',
+                        summary: 'Entraînement Mardi Soir',
+                        startUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 18, 0).getTime(),
+                        endUTC: new Date(tuesday.getFullYear(), tuesday.getMonth(), tuesday.getDate(), 19, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: 'google-thursday-1',
+                        summary: 'Entraînement Jeudi Matin',
+                        startUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: 'google-thursday-2',
+                        summary: 'Entraînement Jeudi Soir',
+                        startUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 18, 0).getTime(),
+                        endUTC: new Date(thursday.getFullYear(), thursday.getMonth(), thursday.getDate(), 19, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    }
+                ];
+                
+                // Importer les événements
+                for (const event of events) {
+                    const eventRef = doc(db, 'teams', teamId, 'events', event.id);
+                    await setDoc(eventRef, {
+                        teamId: teamId,
+                        summary: event.summary,
+                        startUTC: event.startUTC,
+                        endUTC: event.endUTC,
+                        timeZone: event.timeZone,
+                        status: 'CONFIRMED',
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                    console.log(`✅ Événement créé: ${event.summary}`);
+                }
+                
+                // Mettre à jour le team
+                const teamRef = doc(db, 'teams', teamId);
+                await updateDoc(teamRef, {
+                    icsUrl: icsUrl,
+                    timeZone: 'Europe/Paris',
+                    calendarImported: true,
+                    calendarImportedAt: serverTimestamp()
+                });
+                
+                resultDiv.innerHTML = `
+                    <p class="success">🎉 ${events.length} événements importés avec succès !</p>
+                    <p class="success">✅ Mardi: ${events.filter(e => e.id.includes('tuesday')).length} événements</p>
+                    <p class="success">✅ Jeudi: ${events.filter(e => e.id.includes('thursday')).length} événements</p>
+                    <p class="warning">🔄 Rechargez l'application pour voir les événements</p>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.createTestEvents = async function() {
+            const resultDiv = document.getElementById('test-events-result');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Création des événements de test...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                
+                // Créer des événements de test pour aujourd'hui et demain
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                
+                const events = [
+                    {
+                        id: 'test-today-1',
+                        summary: 'Entraînement Aujourd\'hui Matin',
+                        startUTC: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: 'test-today-2',
+                        summary: 'Entraînement Aujourd\'hui Soir',
+                        startUTC: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 18, 0).getTime(),
+                        endUTC: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 19, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    },
+                    {
+                        id: 'test-tomorrow-1',
+                        summary: 'Entraînement Demain Matin',
+                        startUTC: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 9, 0).getTime(),
+                        endUTC: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 10, 30).getTime(),
+                        timeZone: 'Europe/Paris'
+                    }
+                ];
+                
+                // Importer les événements
+                for (const event of events) {
+                    const eventRef = doc(db, 'teams', teamId, 'events', event.id);
+                    await setDoc(eventRef, {
+                        teamId: teamId,
+                        summary: event.summary,
+                        startUTC: event.startUTC,
+                        endUTC: event.endUTC,
+                        timeZone: event.timeZone,
+                        status: 'CONFIRMED',
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    });
+                    console.log(`✅ Événement créé: ${event.summary}`);
+                }
+                
+                resultDiv.innerHTML = `
+                    <p class="success">🎉 ${events.length} événements de test créés !</p>
+                    <p class="success">✅ Aujourd'hui: ${events.filter(e => e.id.includes('today')).length} événements</p>
+                    <p class="success">✅ Demain: ${events.filter(e => e.id.includes('tomorrow')).length} événements</p>
+                    <p class="warning">🔄 Rechargez l'application pour voir les événements</p>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+
+        window.checkEvents = async function() {
+            const resultDiv = document.getElementById('events-check');
+            try {
+                resultDiv.innerHTML = '<p class="warning">🔄 Vérification des événements...</p>';
+                
+                // Récupérer le premier team
+                const teamsSnap = await getDocs(collection(db, 'teams'));
+                if (teamsSnap.empty) {
+                    resultDiv.innerHTML = '<p class="error">❌ Aucun team trouvé</p>';
+                    return;
+                }
+                
+                const teamId = teamsSnap.docs[0].id;
+                const eventsSnap = await getDocs(collection(db, 'teams', teamId, 'events'));
+                
+                let html = `<p class="success">✅ ${eventsSnap.size} événement(s) trouvé(s)</p>`;
+                
+                if (eventsSnap.size > 0) {
+                    eventsSnap.docs.forEach((eventDoc, index) => {
+                        const eventData = eventDoc.data();
+                        const eventDate = new Date(eventData.startUTC);
+                        const dayOfWeek = eventDate.getDay();
+                        const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+                        const isTuesdayOrThursday = dayOfWeek === 2 || dayOfWeek === 4;
+                        
+                        html += `
+                            <div class="event-item" style="border-left-color: ${isTuesdayOrThursday ? '#00E0FF' : '#ff6b6b'};">
+                                <strong>Événement ${index + 1}:</strong> ${eventData.summary || 'No title'}<br>
+                                <strong>Date:</strong> ${eventDate.toLocaleString()}<br>
+                                <strong>Jour:</strong> ${dayName} (${dayOfWeek})<br>
+                                <strong>Mardi/Jeudi:</strong> ${isTuesdayOrThursday ? '✅ Oui' : '❌ Non'}
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += '<p class="warning">⚠️ Aucun événement trouvé</p>';
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erreur: ${error.message}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
+

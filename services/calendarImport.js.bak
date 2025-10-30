@@ -1,0 +1,275 @@
+import { db } from "../services/firebaseConfig";
+import { collection, doc, getDoc, setDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+
+/**
+ * Import ICS via proxy local (http://localhost:8787/ics?url=...),
+ * parsing robuste des VEVENT (regex), et upsert Firestore:
+ *   teams/{teamId}/events/{eventId}
+ * eventId = sha1( (uid||"NOUID") + "_" + startEpoch )
+ */
+export async function importExternalCalendar(icsUrl, { teamId = "demo" } = {}) {
+  const proxy = "http://localhost:8787/ics?url=" + encodeURIComponent(icsUrl);
+
+  // 1) Récupération ICS
+  const res = await fetch(proxy, { method: "GET" });
+  const text = await res.text();
+  const beginCount = (text.match(/BEGIN:VEVENT/g) || []).length;
+  console.log("[ICS] status:", res.status, "len:", text?.length || 0, "VEVENT:", beginCount);
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  if (!text || !text.includes("BEGIN:VCALENDAR")) {
+    console.warn("[ICS] Pas de VCALENDAR dans la réponse");
+    return { total: 0, created: 0, updated: 0 };
+  }
+
+  // 2) Parsing robuste: découpe chaque bloc VEVENT et extrait les champs
+  const events = parseIcsBlocks(text);
+  console.log("[ICS] Parsed events:", events.length);
+
+  // 3) Upsert Firestore
+  let created = 0, updated = 0;
+  const colRef = collection(db, "teams", teamId, "events");
+
+  for (const ev of events) {
+    try {
+      const id = sha1((ev.uid || "NOUID") + "_" + (+ev.start));
+      const ref = doc(colRef, id);
+      const snap = await getDoc(ref);
+
+      const payload = {
+        title: ev.title || "",
+        description: ev.description || "",
+        location: ev.location || "",
+        start: Timestamp.fromDate(ev.start),
+        end: Timestamp.fromDate(ev.end),
+        allDay: !!ev.allDay,
+        uid: ev.uid || null,
+        status: ev.status || "CONFIRMED",
+        source: "ics",
+        cancelled: !!ev.cancelled,
+        hash: sha1(JSON.stringify({
+          title: ev.title||"", description: ev.description||"",
+          location: ev.location||"", start: ev.start?.toISOString?.() || ev.start,
+          end: ev.end?.toISOString?.() || ev.end, allDay: !!ev.allDay, status: ev.status||""
+        })),
+        lastSeenAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      if (!snap.exists()) {
+        await setDoc(ref, payload, { merge: true });
+        if (!payload.cancelled) created++;
+      } else {
+        const prev = snap.data() || {};
+        if (prev.hash !== payload.hash || prev.cancelled !== payload.cancelled) {
+          await setDoc(ref, payload, { merge: true });
+          updated++;
+        } else {
+          await setDoc(ref, { lastSeenAt: serverTimestamp() }, { merge: true });
+        }
+      }
+    } catch (e) {
+      console.error("[ICS upsert err]", e);
+    }
+  }
+
+  return { total: events.length, created, updated };
+}
+
+/* ================= Helpers ================= */
+
+function parseIcsBlocks(ics) {
+  // Déplie les lignes “folded” (RFC5545)
+  const rawLines = ics.split(/\r?\n/);
+  const lines = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const cur = rawLines[i];
+    if (i > 0 && (cur.startsWith(" ") || cur.startsWith("\t"))) {
+      lines[lines.length - 1] += cur.slice(1);
+    } else {
+      lines.push(cur);
+    }
+  }
+  const flat = lines.join("\n");
+
+  // Isole chaque VEVENT
+  const blocks = flat.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g) || [];
+  const out = [];
+
+  for (const block of blocks) {
+    const get = (prop) => {
+      // récupère la 1ère ligne "PROP..." (gère paramètres après ';')
+      const m = block.match(new RegExp(`^${prop}(?:;[^:\\n]*)?:(.*)import { db } from "../services/firebaseConfig";
+import { collection, doc, getDoc, setDoc, serverTimestamp, Timestamp } from "firebase/firestore";
+
+/**
+ * Import ICS via proxy local (http://localhost:8787/ics?url=...),
+ * parsing robuste des VEVENT (regex), et upsert Firestore:
+ *   teams/{teamId}/events/{eventId}
+ * eventId = sha1( (uid||"NOUID") + "_" + startEpoch )
+ */
+export async function importExternalCalendar(icsUrl, { teamId = "demo" } = {}) {
+  const proxy = "http://localhost:8787/ics?url=" + encodeURIComponent(icsUrl);
+
+  // 1) Récupération ICS
+  const res = await fetch(proxy, { method: "GET" });
+  const text = await res.text();
+  const beginCount = (text.match(/BEGIN:VEVENT/g) || []).length;
+  console.log("[ICS] status:", res.status, "len:", text?.length || 0, "VEVENT:", beginCount);
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  if (!text || !text.includes("BEGIN:VCALENDAR")) {
+    console.warn("[ICS] Pas de VCALENDAR dans la réponse");
+    return { total: 0, created: 0, updated: 0 };
+  }
+
+  // 2) Parsing robuste: découpe chaque bloc VEVENT et extrait les champs
+  const events = parseIcsBlocks(text);
+  console.log("[ICS] Parsed events:", events.length);
+
+  // 3) Upsert Firestore
+  let created = 0, updated = 0;
+  const colRef = collection(db, "teams", teamId, "events");
+
+  for (const ev of events) {
+    try {
+      const id = sha1((ev.uid || "NOUID") + "_" + (+ev.start));
+      const ref = doc(colRef, id);
+      const snap = await getDoc(ref);
+
+      const payload = {
+        title: ev.title || "",
+        description: ev.description || "",
+        location: ev.location || "",
+        start: Timestamp.fromDate(ev.start),
+        end: Timestamp.fromDate(ev.end),
+        allDay: !!ev.allDay,
+        uid: ev.uid || null,
+        status: ev.status || "CONFIRMED",
+        source: "ics",
+        cancelled: !!ev.cancelled,
+        hash: sha1(JSON.stringify({
+          title: ev.title||"", description: ev.description||"",
+          location: ev.location||"", start: ev.start?.toISOString?.() || ev.start,
+          end: ev.end?.toISOString?.() || ev.end, allDay: !!ev.allDay, status: ev.status||""
+        })),
+        lastSeenAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+
+      if (!snap.exists()) {
+        await setDoc(ref, payload, { merge: true });
+        if (!payload.cancelled) created++;
+      } else {
+        const prev = snap.data() || {};
+        if (prev.hash !== payload.hash || prev.cancelled !== payload.cancelled) {
+          await setDoc(ref, payload, { merge: true });
+          updated++;
+        } else {
+          await setDoc(ref, { lastSeenAt: serverTimestamp() }, { merge: true });
+        }
+      }
+    } catch (e) {
+      console.error("[ICS upsert err]", e);
+    }
+  }
+
+  return { total: events.length, created, updated };
+}
+
+/* ================= Helpers ================= */
+
+function parseIcsBlocks(ics) {
+  // Déplie les lignes “folded” (RFC5545)
+  const rawLines = ics.split(/\r?\n/);
+  const lines = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const cur = rawLines[i];
+    if (i > 0 && (cur.startsWith(" ") || cur.startsWith("\t"))) {
+      lines[lines.length - 1] += cur.slice(1);
+    } else {
+      lines.push(cur);
+    }
+  }
+  const flat = lines.join("\n");
+
+  // Isole chaque VEVENT
+  const blocks = flat.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g) || [];
+  const out = [];
+
+  for (const block of blocks) {
+    const get = (prop) => {
+      // récupère la 1ère ligne "PROP..." (gère paramètres après ';')
+      const m = block.match(, "mi")?:(.*)$, "mi"));
+      return m ? m[1].trim() : null;
+    };
+
+    const dtStartRaw = get("DTSTART");
+    const dtEndRaw   = get("DTEND");
+    const summary    = get("SUMMARY");
+    const desc       = get("DESCRIPTION");
+    const loc        = get("LOCATION");
+    const uid        = get("UID");
+    const status     = (get("STATUS") || "CONFIRMED").toUpperCase();
+
+    const start = parseIcsDate(dtStartRaw);
+    let end     = parseIcsDate(dtEndRaw);
+
+    // Fallback: si pas de DTEND, 1h par défaut
+    if (start && !end) end = new Date(start.getTime() + 60 * 60 * 1000);
+
+    if (start && end) {
+      out.push({
+        uid,
+        title: decodeIcs(summary || ""),
+        description: decodeIcs(desc || ""),
+        location: decodeIcs(loc || ""),
+        start,
+        end,
+        allDay: isAllDay(dtStartRaw, dtEndRaw),
+        status,
+        cancelled: status === "CANCELLED",
+      });
+    }
+  }
+  return out;
+}
+
+function parseIcsDate(v) {
+  if (!v) return null;
+  const s = v.trim();
+  // exemples: 20251016T171500Z  ou  20251016T171500
+  const hasZ = s.endsWith("Z");
+  const yyyy = s.slice(0,4), mm = s.slice(4,6), dd = s.slice(6,8);
+  const HH = s.slice(9,11) || "00", MM = s.slice(11,13) || "00", SS = s.slice(13,15) || "00";
+  const iso = yyyy + "-" + mm + "-" + dd + "T" + HH + ":" + MM + ":" + SS;
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
+}
+function isAllDay(ds, de) {
+  // heuristique: champs sans time (ex. DTSTART;VALUE=DATE:20250101)
+  return !!(ds && ds.length === "YYYYMMDD".length);
+}
+function decodeIcs(t) {
+  return t.replace(/\\n/gi, "\n").replace(/\\,/g, ",").replace(/\\;/g, ";").trim();
+}
+
+// petit SHA-1 pour id stable
+function sha1(str) {
+  function rotl(n,s){return n<<s|n>>>32-s}
+  function tohex(i){for(var h="",s=28;s>=0;s-=4)h+=(i>>s&15).toString(16);return h}
+  var H0=1732584193,H1=4023233417,H2=2562383102,H3=271733878,H4=3285377520;
+  var i,t,W=new Array(80);var ml=str.length,wa=[];
+  for(i=0;i<ml;i++) wa[i>>2]|=str.charCodeAt(i)<<24-8*(i%4);
+  wa[ml>>2]|=0x80<<24-8*(ml%4); wa[((ml+8>>6)+1<<4)+15]=ml*8;
+  for(t=0;t<wa.length;t+=16){
+    for(i=0;i<16;i++)W[i]=wa[t+i]; for(i=16;i<80;i++)W[i]=rotl(W[i-3]^W[i-8]^W[i-14]^W[i-16],1);
+    var a=H0,b=H1,c=H2,d=H3,e=H4;
+    for(i=0;i<80;i++){var s=Math.floor(i/20),f=s==0?(b&c)|(~b&d):s==1?b^c^d:s==2?(b&c)|(b&d)|(c&d):b^c^d;
+      var k=s==0?1518500249:s==1?1859775393:s==2?2400959708:3395469782;
+      var temp=(rotl(a,5)+f+e+k+W[i])>>>0; e=d; d=c; c=rotl(b,30)>>>0; b=a; a=temp;}
+    H0=(H0+a)>>>0; H1=(H1+b)>>>0; H2=(H2+c)>>>0; H3=(H3+d)>>>0; H4=(H4+e)>>>0;
+  }
+  return tohex(H0)+tohex(H1)+tohex(H2)+tohex(H3)+tohex(H4);
+}
+
+
+

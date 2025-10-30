@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CHAMPIONTRACKPRO Welcome</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Inter:wght@300&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --gradient-cyan: #00E0FF;
+            --gradient-blue: #4A67FF;
+            --matte-graphite: #1A1A1A;
+            --graphite-border: #2B2E36;
+        }
+        body {
+            background: linear-gradient(to bottom, #0E1528, #000000);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            font-family: 'Inter', 'SF Pro Display', sans-serif;
+        }
+        .logo-font {
+            font-family: 'Cinzel', serif;
+        }
+        .text-glow-white {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        .text-glow-cyan {
+            color: #00E0FF;
+            text-shadow: 0 0 8px rgba(0, 224, 255, 0.7), 0 0 20px rgba(0, 224, 255, 0.5);
+        }
+        .cyan-halo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            height: 25vh;
+            background: radial-gradient(circle, rgba(0, 224, 255, 0.15) 0%, rgba(0, 224, 255, 0) 70%);
+            filter: blur(60px);
+            pointer-events: none;
+        }
+        .button-glow {
+             box-shadow: 0 0 15px rgba(0, 224, 255, 0.3), 0 0 25px rgba(74, 103, 255, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-white antialiased">
+<div class="relative flex flex-col h-full min-h-screen w-full items-center justify-center p-6">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="cyan-halo"></div>
+</div>
+<main class="flex flex-col items-center justify-center flex-grow w-full">
+<div class="relative z-10 text-center">
+<h1 class="logo-font font-bold text-white text-glow-white" style="font-size: clamp(1.8rem, 8vw, 2.4rem);">
+                ChampionTrack<span class="text-glow-cyan">Pro</span>
+</h1>
+<p class="mt-4 text-xs font-thin text-gray-300 tracking-[0.3em] uppercase">The Training Intelligence</p>
+</div>
+</main>
+<footer class="w-full max-w-sm flex-shrink-0 pb-8 pt-4">
+<div class="space-y-4">
+<button class="w-full h-14 rounded-xl bg-gradient-to-r from-[var(--gradient-cyan)] to-[var(--gradient-blue)] text-white font-bold text-base tracking-wider uppercase button-glow hover:opacity-90 transition-opacity">
+                Create Account
+            </button>
+<button class="w-full h-14 rounded-xl bg-[var(--matte-graphite)] border border-[var(--graphite-border)] text-white font-bold text-base tracking-wider uppercase hover:bg-opacity-80 transition-colors">
+                Log In
+            </button>
+</div>
+</footer>
+</div>
+
+</body></html>

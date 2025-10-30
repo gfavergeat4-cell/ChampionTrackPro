@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChampionTrackPro - Login</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;family=Inter:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<style type="text/tailwindcss">
+        :root {
+            --cyan-glow: #00E0FF;
+            --gradient-blue: #4A67FF;
+            --light-gray: #BFC5D9;
+            --input-bg: rgba(26, 26, 26, 0.6);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #0E1528 0%, #000000 100%);
+        }
+        .logo-font {
+            font-family: 'Cinzel', serif;
+        }
+        .pro-glow {
+            color: var(--cyan-glow);
+            text-shadow: 0 0 15px var(--cyan-glow), 0 0 25px var(--cyan-glow);
+        }
+        .tagline {
+            color: var(--light-gray);
+            opacity: 0.8;
+            letter-spacing: 0.25em;
+        }
+        .form-input {
+            background-color: var(--input-bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            height: 52px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .form-input::placeholder {
+            color: #A0AEC0;
+        }
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 224, 255, 0.5);
+            border-color: rgba(0, 224, 255, 0.7);
+        }
+        .btn-gradient {
+            background-image: linear-gradient(to right, var(--cyan-glow), var(--gradient-blue));
+            box-shadow: 0 4px 20px rgba(0, 224, 255, 0.3);
+            border-radius: 14px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-white">
+<div class="flex flex-col items-center justify-center min-h-screen p-6">
+<div class="w-full max-w-sm mx-auto text-center">
+<header class="mb-12">
+<h1 class="logo-font text-3xl font-bold">
+<span>ChampionTrack</span><span class="pro-glow">PRO</span>
+</h1>
+<p class="tagline text-xs font-light mt-2 uppercase">THE TRAINING INTELLIGENCE</p>
+</header>
+<main class="w-full space-y-5">
+<form class="space-y-4">
+<div>
+<input class="form-input w-full px-4" id="email" placeholder="Email or Username" type="text"/>
+</div>
+<div class="relative">
+<input class="form-input w-full px-4 pr-10" id="password" placeholder="Password" type="password"/>
+<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400" type="button">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="text-right">
+<a class="text-sm font-medium text-[var(--cyan-glow)] hover:underline" href="#">Forgot Password?</a>
+</div>
+</form>
+<div class="pt-6">
+<button class="w-full btn-gradient text-white font-bold py-4 uppercase tracking-wider text-base hover:opacity-90 transition-opacity">
+                        LOG IN
+                    </button>
+</div>
+<footer class="pt-6">
+<p class="text-sm text-gray-400">
+                        Don’t have an account? <a class="font-medium text-[var(--cyan-glow)] hover:underline" href="#">Create one</a>
+</p>
+</footer>
+</main>
+</div>
+</div>
+
+</body></html>

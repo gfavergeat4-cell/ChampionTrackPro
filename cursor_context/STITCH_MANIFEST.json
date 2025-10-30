@@ -1,0 +1,44 @@
+﻿{
+  "screens": [
+    {
+      "title": "Landing",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/landing page",
+      "destFile": "src/stitch_components/Landing.tsx"
+    },
+    {
+      "title": "Login",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/login_screen_-_full_1",
+      "destFile": "src/stitch_components/Login.tsx"
+    },
+    {
+      "title": "CreateAccount",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/general_create_account_screen_-_full_2",
+      "destFile": "src/stitch_components/CreateAccount.tsx"
+    },
+    {
+      "title": "AthleteHome",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/athlete_main_dashboard",
+      "destFile": "src/stitch_components/AthleteHome.tsx"
+    },
+    {
+      "title": "AthleteScheduleDay",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/athlete_schedule_-_day_view_1",
+      "destFile": "src/stitch_components/AthleteScheduleDay.tsx"
+    },
+    {
+      "title": "AthleteScheduleWeek",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/athlete_schedule_-_week_view_2",
+      "destFile": "src/stitch_components/AthleteScheduleWeek.tsx"
+    },
+    {
+      "title": "QuestionnairePainNo",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/training_questionnaire_-_pain=no",
+      "destFile": "src/stitch_components/QuestionnairePainNo.tsx"
+    },
+    {
+      "title": "QuestionnairePainYes",
+      "sourceDir": "cursor_context/stitch_welcome_to_championtrackpro/training_questionnaire_-_pain=yes",
+      "destFile": "src/stitch_components/QuestionnairePainYes.tsx"
+    }
+  ]
+}

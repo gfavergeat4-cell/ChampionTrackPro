@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Training Questionnaire — Final CHAMPIONTRACKPRO Polish (Session Header + Indicator Explanations)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --track-bg: #1E222D;
+      --track-gradient: linear-gradient(90deg, #00E0FF, #4A67FF);
+      --thumb-color: #00E0FF;
+    }
+    body {
+      background: linear-gradient(to bottom, #0B0F1A, #020409);
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 224, 255, 0.1), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;background: var(--track-bg);
+      outline: none;
+      border-radius: 9999px;
+      transition: background 200ms ease-out;
+    }
+    .slider::-webkit-slider-runnable-track {
+      height: 10px;background: var(--track-gradient);
+      border-radius: 9999px;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--thumb-color);
+      cursor: pointer;
+      border-radius: 50%;
+      margin-top: -5px;box-shadow: 0 0 10px 2px rgba(0, 224, 255, 0.5);
+      transition: transform 200ms ease-out, box-shadow 150ms ease-in;
+    }
+    .slider:active::-webkit-slider-thumb {
+        box-shadow: 0 0 15px 5px rgba(0, 224, 255, 0.7);
+    }
+    .slider::-moz-range-track {
+      height: 10px;background: var(--track-gradient);
+      border-radius: 9999px;
+    }
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--thumb-color);
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px rgba(0, 224, 255, 0.5);
+      border: none;
+      transition: transform 200ms ease-out, box-shadow 150ms ease-in;
+    }
+    .slider:active::-moz-range-thumb {
+        box-shadow: 0 0 15px 5px rgba(0, 224, 255, 0.7);
+    }
+    .card-animate {
+        animation: fadeIn 150ms ease-out both;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .pulse-glow {
+        animation: pulse-glow 2s infinite ease-in-out;
+    }
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 10px 0 rgba(0, 224, 255, 0.2); }
+        50% { box-shadow: 0 0 20px 5px rgba(0, 224, 255, 0.4); }
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "var(--thumb-color)",
+            "background": {
+                "start": "#0B0F1A",
+                "end": "#020409",
+                "card": "#141A24",
+                "button-inactive": "#1E222D"
+            },
+            "text": {
+                "primary": "rgba(255, 255, 255, 0.9)",
+                "secondary": "rgba(154, 163, 178, 0.7)",
+                "icon": "#9AA3B2"
+            },
+            "gradient-start": "#00E0FF",
+            "gradient-end": "#4A67FF",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          fontWeight: {
+            semibold: '600',
+            medium: '500',
+          },
+          borderRadius: {
+            "DEFAULT": "16px",
+            "lg": "12px",
+            "full": "9999px"
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 20px 0 rgba(0, 224, 255, 0.25)',
+            'glow-cyan-button': '0 0 20px 5px rgba(0, 224, 255, 0.25)',
+            'inner-cyan': 'inset 0 0 0 1px rgba(0, 224, 255, 0.1)',
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display text-text-primary min-h-screen">
+<div class="relative z-10 flex flex-col min-h-screen p-4">
+<header class="flex flex-col items-center justify-center pb-6 text-center">
+<div class="relative">
+<h1 class="text-3xl font-semibold text-text-primary">Practice</h1>
+<div class="absolute inset-0 -z-10 blur-xl" style="background: radial-gradient(circle, rgba(0, 224, 255, 0.2), transparent 70%);"></div>
+</div>
+<p class="text-lg font-medium text-text-secondary">2:00 PM – 3:30 PM</p>
+</header>
+<main class="flex-grow space-y-4 overflow-y-auto">
+<div class="space-y-4">
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 50ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="avg-intensity">Average Intensity</label>
+<p class="text-sm text-text-secondary tracking-wide">Average of all effort intensities.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="avg-intensity" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 100ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="high-intensity">High Intensity</label>
+<p class="text-sm text-text-secondary tracking-wide">Average of the most intense effort phases.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="high-intensity" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 150ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="cardiac-impact">Cardiac Impact</label>
+<p class="text-sm text-text-secondary tracking-wide">Average of cardiovascular solicitations.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="cardiac-impact" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 200ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="muscular-impact">Muscular Impact</label>
+<p class="text-sm text-text-secondary tracking-wide">Average of muscular solicitations.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="muscular-impact" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 250ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="fatigue">Fatigue</label>
+<p class="text-sm text-text-secondary tracking-wide">Decrease in available physical resources.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="fatigue" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 300ms;">
+<div>
+<p class="font-medium text-lg text-white">Did you feel any physical pain?</p>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 rounded-lg text-text-primary font-medium text-sm bg-gradient-to-r from-gradient-start to-gradient-end pulse-glow">No</button>
+<button class="flex-1 py-2.5 rounded-lg text-text-primary font-medium text-sm bg-background-button-inactive">Yes</button>
+</div>
+</div>
+<div class="space-y-4">
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 350ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="technique">Technique</label>
+<p class="text-sm text-text-secondary tracking-wide">Mastery of gestures and movements.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="technique" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 400ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="tactics">Tactics</label>
+<p class="text-sm text-text-secondary tracking-wide">Relevance of decisions and strategies.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="tactics" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 450ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="dynamism">Dynamism</label>
+<p class="text-sm text-text-secondary tracking-wide">Speed of reaction and execution.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="dynamism" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 500ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="nervousness">Nervousness</label>
+<p class="text-sm text-text-secondary tracking-wide">Irritation, impatience, or agitation.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="nervousness" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 550ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="concentration">Concentration</label>
+<p class="text-sm text-text-secondary tracking-wide">Ability to handle and face various situations.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="concentration" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 600ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="confidence">Confidence</label>
+<p class="text-sm text-text-secondary tracking-wide">Belief in one’s own abilities.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="confidence" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-background-card rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 650ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="well-being">Well-being</label>
+<p class="text-sm text-text-secondary tracking-wide">Personal and relational balance.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="well-being" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div class="bg-[#141A24] rounded-DEFAULT shadow-inner-cyan p-4 space-y-3 card-animate" style="animation-delay: 700ms;">
+<div class="flex justify-between items-center">
+<div>
+<label class="font-medium text-lg text-white" for="sleep-quality">Sleep Quality</label>
+<p class="text-sm text-text-secondary tracking-wide">Quality of rest during the last 24 hours.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="slider" id="sleep-quality" max="100" min="0" type="range" value="50"/>
+<svg class="w-4 h-4 text-text-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v12M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+</div>
+</main>
+<footer class="pt-6 pb-2">
+<button class="w-full py-3.5 rounded-lg text-text-primary font-medium bg-gradient-to-r from-gradient-start to-gradient-end shadow-glow-cyan-button transition-all duration-200 ease-out hover:brightness-125 active:translate-y-0.5 active:shadow-none">
+        Submit
+      </button>
+</footer>
+</div>
+</body></html>

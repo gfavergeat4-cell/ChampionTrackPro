@@ -1,0 +1,58 @@
+import React, { useState } from "react";
+import { View, Text, TextInput, Button, Alert, ScrollView } from "react-native";
+import { auth } from "../services/firebaseConfig";
+import { __diagSignIn } from "./__authDiag";
+
+export default function Landing() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function onPressLogin() {
+    try {
+      await __diagSignIn(auth, email, password);
+      // si OK, la nav existante devrait rediriger selon ton app,
+      // sinon on reste sur place avec l'alerte "Connexion OK".
+    } catch (e) {
+      // __diagSignIn affiche déjà une alerte détaillée
+      console.log("[Landing] login error (propagée)", e?.code || e?.message || e);
+    }
+  }
+
+  return (
+    <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 12 }}>Connexion</Text>
+
+      <View style={{ marginBottom: 12 }}>
+        <Text style={{ marginBottom: 6 }}>Email</Text>
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="email-address"
+          placeholder="you@example.com"
+          value={email}
+          onChangeText={setEmail}
+          style={{
+            borderWidth: 1, borderColor: "#ccc", borderRadius: 8,
+            paddingHorizontal: 12, paddingVertical: 10
+          }}
+        />
+      </View>
+
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ marginBottom: 6 }}>Mot de passe</Text>
+        <TextInput
+          secureTextEntry
+          placeholder="••••••••"
+          value={password}
+          onChangeText={setPassword}
+          style={{
+            borderWidth: 1, borderColor: "#ccc", borderRadius: 8,
+            paddingHorizontal: 12, paddingVertical: 10
+          }}
+        />
+      </View>
+
+      <Button title="Se connecter" onPress={onPressLogin} />
+    </ScrollView>
+  );
+}
