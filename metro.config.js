@@ -1,16 +1,14 @@
-﻿const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
-const exclusionList = require("metro-config/src/defaults/exclusionList");
+﻿/**
+ * Metro config pour projet Expo/React Native.
+ * On s'appuie sur `expo/metro-config` (fourni par le paquet `expo`),
+ * donc PAS besoin de `@react-native/metro-config`.
+ */
+const { getDefaultConfig } = require("expo/metro-config");
 
-const defaultConfig = getDefaultConfig(__dirname);
+const projectRoot = __dirname;
+const config = getDefaultConfig(projectRoot);
 
-const blocklist = exclusionList([
-  /functions[\/\\]node_modules[\/\\].*/,   // ignore les node_modules backend
-  /android[\/\\].*\/node_modules[\/\\].*/, // ignore node_modules Android
-  /\.gradle[\/\\].*/,                      // ignore caches gradle
-]);
+// (Optionnel) Ajustements si besoin, ex:
+// config.resolver.sourceExts.push("cjs");
 
-module.exports = mergeConfig(defaultConfig, {
-  resolver: {
-    blockList: blocklist,
-  },
-});
+module.exports = config;
