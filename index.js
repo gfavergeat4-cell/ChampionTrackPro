@@ -1,12 +1,13 @@
 ﻿import "./firebaseConfig.native";
-import 'firebase/auth';
 import { initAuth } from "./firebaseConfig.native";
+import { registerRootComponent } from "expo";
+import App from "./App";
 
 /** Lance l'init Auth sans bloquer le rendu */
 setImmediate(() => { initAuth().catch(()=>{}); });
-import { registerRootComponent } from "expo";
-import App from "./App";
+
 registerRootComponent(App);
+
 
 
 

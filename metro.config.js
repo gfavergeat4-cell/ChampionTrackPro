@@ -1,14 +1,14 @@
-﻿/**
- * Metro config pour projet Expo/React Native.
- * On s'appuie sur `expo/metro-config` (fourni par le paquet `expo`),
- * donc PAS besoin de `@react-native/metro-config`.
- */
-const { getDefaultConfig } = require("expo/metro-config");
+﻿const { getDefaultConfig } = require('@react-native/metro-config');
+const exclusionList = require('metro-config/src/defaults/exclusionList');
 
-const projectRoot = __dirname;
-const config = getDefaultConfig(projectRoot);
+const config = getDefaultConfig(__dirname);
 
-// (Optionnel) Ajustements si besoin, ex:
-// config.resolver.sourceExts.push("cjs");
+// Empêche d'embarquer Cloud Functions (deuxième copie de Firebase)
+config.resolver = {
+  ...config.resolver,
+  blockList: exclusionList([
+    /(^|[\\/])functions([\\/].*)?/,   // tout le dossier functions/
+  ]),
+};
 
 module.exports = config;
