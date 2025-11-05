@@ -3,24 +3,20 @@ import { registerRootComponent } from "expo";
 import App from "./App";
 
 // Détecter la plateforme et utiliser la bonne config Firebase
-// Utiliser try-catch pour gérer les imports qui ne fonctionnent pas sur certaines plateformes
-try {
-  if (Platform.OS === "web") {
-    // Web : utiliser la config web (TypeScript sera compilé par Metro)
-    const webConfig = require("./web/firebaseConfig.web.ts");
-    if (webConfig && webConfig.initAuth) {
-      setTimeout(() => { webConfig.initAuth().catch(() => {}); }, 0);
-    }
-  } else {
-    // React Native : utiliser la config native
+// Pour le web, index.web.js est utilisé (configuré dans app.config.js)
+// Ce fichier est utilisé uniquement pour React Native (iOS/Android)
+if (Platform.OS !== "web") {
+  // React Native uniquement : utiliser la config native
+  try {
+    // Import dynamique pour éviter les erreurs de bundling web
     const nativeConfig = require("./firebaseConfig.native");
     if (nativeConfig && nativeConfig.initAuth) {
       setImmediate(() => { nativeConfig.initAuth().catch(() => {}); });
     }
+  } catch (error) {
+    // Si l'import échoue, continuer sans initialisation (sera géré par le composant)
+    console.warn("Firebase native config import failed:", error);
   }
-} catch (error) {
-  // Si l'import échoue, continuer sans initialisation (sera géré par le composant)
-  console.warn("Firebase config import failed:", error);
 }
 
 registerRootComponent(App);

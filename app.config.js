@@ -12,7 +12,7 @@
     web: {
       favicon: "./assets/favicon.png",
       bundler: "metro",
-      output: "static",
+      output: "single",
       entryPoint: "./index.web.js"
     },
     extra: {
