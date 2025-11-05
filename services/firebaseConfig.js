@@ -1,20 +1,33 @@
-﻿import { initializeApp, getApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+﻿import { Platform } from "react-native";
 
-// ✅ Ta vraie config Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDwslrK0lbuqsBl61C_l3gjVDGF8ZqTZ5o",
-  authDomain: "championtrackpro.firebaseapp.com",
-  projectId: "championtrackpro",
-  storageBucket: "championtrackpro.firebasestorage.app",
-  messagingSenderId: "308674968497",
-  appId: "1:308674968497:web:5f8d10b09ee98717a81b90"
-};
+let auth, db, app;
 
-// ✅ Initialise l’app (évite doublons si déjà initialisée)
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+if (Platform.OS !== "web") {
+  // React Native - utiliser firebaseConfig.native.js
+  const nativeConfig = require("../firebaseConfig.native");
+  const { getFirestore } = require("firebase/firestore");
+  
+  auth = nativeConfig.auth;
+  db = getFirestore(nativeConfig.app);
+  app = nativeConfig.app;
+} else {
+  // Web - config standard
+  const { initializeApp, getApp, getApps } = require("firebase/app");
+  const { getAuth } = require("firebase/auth");
+  const { getFirestore } = require("firebase/firestore");
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export default app;
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwslrK0lbuqsBl61C_l3gjVDGF8ZqTZ5o",
+    authDomain: "championtrackpro.firebaseapp.com",
+    projectId: "championtrackpro",
+    storageBucket: "championtrackpro.firebasestorage.app",
+    messagingSenderId: "308674968497",
+    appId: "1:308674968497:web:5f8d10b09ee98717a81b90"
+  };
+
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+}
+
+export { auth, db, app };

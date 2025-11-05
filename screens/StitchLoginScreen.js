@@ -11,7 +11,9 @@ export default function StitchLoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     
     // Validation des champs
     if (!formData.email || !formData.password) {
@@ -38,19 +40,26 @@ export default function StitchLoginScreen() {
       
     } catch (error) {
       console.error("❌ Erreur de connexion:", error);
+      console.error("❌ Code d'erreur:", error.code);
+      console.error("❌ Message d'erreur:", error.message);
       
       let errorMessage = "Erreur lors de la connexion";
       
       if (error.code === "auth/user-not-found") {
-        errorMessage = "Aucun compte trouvé avec cette adresse email";
+        errorMessage = "Aucun compte trouvé avec cette adresse email. Créez un compte d'abord.";
       } else if (error.code === "auth/wrong-password") {
         errorMessage = "Mot de passe incorrect";
+      } else if (error.code === "auth/invalid-credential") {
+        // Firebase v9+ utilise invalid-credential pour user-not-found ET wrong-password
+        errorMessage = "Email ou mot de passe incorrect. Vérifiez vos identifiants ou créez un compte.";
       } else if (error.code === "auth/invalid-email") {
         errorMessage = "Adresse email invalide";
       } else if (error.code === "auth/too-many-requests") {
         errorMessage = "Trop de tentatives. Veuillez réessayer plus tard";
       } else if (error.code === "auth/network-request-failed") {
         errorMessage = "Erreur de connexion. Vérifiez votre connexion internet";
+      } else {
+        errorMessage = `Erreur: ${error.message || error.code || "Erreur inconnue"}`;
       }
       
       Alert.alert("Erreur de connexion", errorMessage);
@@ -214,7 +223,7 @@ export default function StitchLoginScreen() {
                 />
                 {/* œil déco */}
                 <div
-                  aria-hidden
+                  aria-hidden="true"
                   style={{
                     position: "absolute",
                     right: 12,
@@ -222,6 +231,7 @@ export default function StitchLoginScreen() {
                     transform: "translateY(-50%)",
                     color: "#9AA3B2",
                     opacity: 0.85,
+                    pointerEvents: "none",
                   }}
                 >
                   <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -266,6 +276,10 @@ export default function StitchLoginScreen() {
             <button 
               type="submit" 
               form="login-form"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e);
+              }}
               style={{
                 ...primaryBtnStyle,
                 width: "100%",
