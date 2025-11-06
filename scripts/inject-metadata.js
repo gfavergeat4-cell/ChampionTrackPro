@@ -9,6 +9,8 @@ const fs = require('fs');
 const path = require('path');
 
 const HTML_FILE = path.join(__dirname, '../web/dist/index.html');
+const OG_IMAGE_SOURCE = path.join(__dirname, '../web/og-image.jpg');
+const OG_IMAGE_DEST = path.join(__dirname, '../web/dist/og-image.jpg');
 const METADATA = `
     <!-- Primary Meta Tags -->
     <meta name="title" content="ChampionTrackPRO - The Training Intelligence" />
@@ -19,10 +21,10 @@ const METADATA = `
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://championtrackpro.vercel.app/" />
+    <meta property="og:url" content="https://champion-track-pro.vercel.app/" />
     <meta property="og:title" content="ChampionTrackPRO - The Training Intelligence" />
     <meta property="og:description" content="Optimisez vos entraînements avec ChampionTrackPRO, la solution d'intelligence pour le sport. Suivez votre planning, soumettez vos questionnaires et analysez vos performances." />
-    <meta property="og:image" content="https://championtrackpro.vercel.app/og-image.png" />
+    <meta property="og:image" content="https://champion-track-pro.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="ChampionTrackPRO - The Training Intelligence" />
@@ -31,10 +33,10 @@ const METADATA = `
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://championtrackpro.vercel.app/" />
+    <meta name="twitter:url" content="https://champion-track-pro.vercel.app/" />
     <meta name="twitter:title" content="ChampionTrackPRO - The Training Intelligence" />
     <meta name="twitter:description" content="Optimisez vos entraînements avec ChampionTrackPRO, la solution d'intelligence pour le sport. Suivez votre planning, soumettez vos questionnaires et analysez vos performances." />
-    <meta name="twitter:image" content="https://championtrackpro.vercel.app/og-image.png" />
+    <meta name="twitter:image" content="https://champion-track-pro.vercel.app/og-image.jpg" />
     <meta name="twitter:image:alt" content="ChampionTrackPRO - The Training Intelligence" />
     
     <!-- Favicon -->
@@ -75,6 +77,26 @@ function injectMetadata() {
 
   fs.writeFileSync(HTML_FILE, html, 'utf8');
   console.log('✅ Métadonnées injectées avec succès dans le HTML');
+  
+  // Copier l'image Open Graph si elle existe
+  copyOGImage();
+}
+
+function copyOGImage() {
+  if (fs.existsSync(OG_IMAGE_SOURCE)) {
+    const distDir = path.dirname(OG_IMAGE_DEST);
+    if (!fs.existsSync(distDir)) {
+      fs.mkdirSync(distDir, { recursive: true });
+    }
+    
+    fs.copyFileSync(OG_IMAGE_SOURCE, OG_IMAGE_DEST);
+    const stats = fs.statSync(OG_IMAGE_DEST);
+    const fileSizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+    console.log(`✅ Image Open Graph copiée: ${OG_IMAGE_DEST} (${fileSizeMB} MB)`);
+  } else {
+    console.warn(`⚠️  Image Open Graph non trouvée: ${OG_IMAGE_SOURCE}`);
+    console.warn(`   Générez-la avec: npm run og:generate`);
+  }
 }
 
 injectMetadata();
