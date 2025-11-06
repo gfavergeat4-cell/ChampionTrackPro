@@ -16,7 +16,7 @@
       entryPoint: "./index.web.js",
       name: "ChampionTrackPRO",
       shortName: "CTP",
-      description: "The Training Intelligence - Optimisez vos entraînements avec ChampionTrackPRO",
+      description: "The Training Intelligence",
       themeColor: "#0E1528",
       backgroundColor: "#0E1528",
       lang: "en",

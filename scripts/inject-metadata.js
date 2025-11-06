@@ -13,8 +13,8 @@ const OG_IMAGE_SOURCE = path.join(__dirname, '../web/og-image.jpg');
 const OG_IMAGE_DEST = path.join(__dirname, '../web/dist/og-image.jpg');
 const METADATA = `
     <!-- Primary Meta Tags -->
-    <meta name="title" content="ChampionTrackPRO - The Training Intelligence" />
-    <meta name="description" content="Optimisez vos entraînements avec ChampionTrackPRO, la solution d'intelligence pour le sport. Suivez votre planning, soumettez vos questionnaires et analysez vos performances." />
+    <meta name="title" content="ChampionTrackPRO" />
+    <meta name="description" content="The Training Intelligence" />
     <meta name="keywords" content="sport, entraînement, planning, questionnaire, performance, athlète, coach" />
     <meta name="author" content="ChampionTrackPRO" />
     <meta name="theme-color" content="#0E1528" />
@@ -22,8 +22,8 @@ const METADATA = `
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://champion-track-pro.vercel.app/" />
-    <meta property="og:title" content="ChampionTrackPRO - The Training Intelligence" />
-    <meta property="og:description" content="Optimisez vos entraînements avec ChampionTrackPRO, la solution d'intelligence pour le sport. Suivez votre planning, soumettez vos questionnaires et analysez vos performances." />
+    <meta property="og:title" content="ChampionTrackPRO" />
+    <meta property="og:description" content="The Training Intelligence" />
     <meta property="og:image" content="https://champion-track-pro.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -34,8 +34,8 @@ const METADATA = `
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://champion-track-pro.vercel.app/" />
-    <meta name="twitter:title" content="ChampionTrackPRO - The Training Intelligence" />
-    <meta name="twitter:description" content="Optimisez vos entraînements avec ChampionTrackPRO, la solution d'intelligence pour le sport. Suivez votre planning, soumettez vos questionnaires et analysez vos performances." />
+    <meta name="twitter:title" content="ChampionTrackPRO" />
+    <meta name="twitter:description" content="The Training Intelligence" />
     <meta name="twitter:image" content="https://champion-track-pro.vercel.app/og-image.jpg" />
     <meta name="twitter:image:alt" content="ChampionTrackPRO - The Training Intelligence" />
     
@@ -53,11 +53,16 @@ function injectMetadata() {
 
   let html = fs.readFileSync(HTML_FILE, 'utf8');
   
-  // Vérifier si les métadonnées sont déjà présentes
-  if (html.includes('og:title')) {
-    console.log('✅ Les métadonnées sont déjà présentes dans le HTML');
-    return;
-  }
+  // Supprimer les anciennes métadonnées Open Graph et Twitter si elles existent
+  // Cela permet de les remplacer par les nouvelles versions
+  html = html.replace(/<!-- Open Graph \/ Facebook -->[\s\S]*?<!-- Twitter -->[\s\S]*?<meta name="twitter:image:alt"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:[^>]*>/g, '');
+  html = html.replace(/<meta name="twitter:[^>]*>/g, '');
+  html = html.replace(/<meta name="description"[^>]*>/g, '');
+  html = html.replace(/<meta name="title"[^>]*>/g, '');
+  html = html.replace(/<meta name="keywords"[^>]*>/g, '');
+  html = html.replace(/<meta name="author"[^>]*>/g, '');
+  html = html.replace(/<meta name="theme-color"[^>]*>/g, '');
 
   // Trouver la balise </head> et insérer les métadonnées avant
   const headEndIndex = html.indexOf('</head>');
