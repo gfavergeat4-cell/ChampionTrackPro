@@ -58,3 +58,4 @@ Après ces 3 étapes, vous devriez voir :
 
 **Cette solution contourne définitivement l'erreur "Requiring unknown module 851" et permet l'import du calendrier Google !** 🚀
 
+

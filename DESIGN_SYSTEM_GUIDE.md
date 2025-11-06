@@ -180,3 +180,4 @@ Tous les tokens sont centralisés dans `src/theme/tokens.ts` :
 4. **Documentation**: Compléter la documentation des composants
 5. **Accessibilité**: Vérifier la conformité WCAG
 
+

@@ -124,3 +124,4 @@ Avec Expo Go, vous aurez :
 
 **🚀 Prêt à tester ? Lancez `npx expo start` et scannez le QR code !**
 
+

@@ -288,3 +288,4 @@ L'application ChampionTrackPro est maintenant **100% responsive** avec :
 
 L'expérience utilisateur est maintenant **optimale** sur mobile, tablet et desktop ! 🚀
 
+

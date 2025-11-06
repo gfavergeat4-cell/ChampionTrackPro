@@ -96,3 +96,4 @@ export const getMainContainerStyle = (device: DeviceInfo) => {
   };
 };
 
+

@@ -370,7 +370,7 @@ export default function StitchCreateAccountScreen() {
             {/* Logo + Tagline */}
             <div className="logo-wrap">
               <h1 className="logo">
-                ChampionTrack<span className="pro">PRO</span>
+                ChampionTrack<span className="pro">Pro</span>
               </h1>
               <p className="tagline">THE TRAINING INTELLIGENCE</p>
             </div>

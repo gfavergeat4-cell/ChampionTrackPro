@@ -129,3 +129,4 @@ L'application devrait maintenant afficher :
 
 L'application utilise maintenant le design mobile forcé comme demandé ! 🎉
 
+

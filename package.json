@@ -13,6 +13,7 @@
     "web": "expo start --web",
     "web:start": "expo start --web",
     "web:build": "expo export --platform web --output-dir web/dist",
+    "web:build:meta": "npm run web:build && node scripts/inject-metadata.js",
     "android:bundle": "npx expo export --platform android --output-dir android-bundle --clear",
     "android:gradle:clean": "cd android && gradlew clean",
     "android:assembleDebug": "cd android && gradlew assembleDebug",

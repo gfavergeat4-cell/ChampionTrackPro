@@ -223,3 +223,4 @@ console.log('Week events:', weekSnap.docs.map(d => d.data()));
 
 **🚀 Une fois tous ces tests passés, l'application devrait fonctionner parfaitement avec le nouveau schéma Firestore et les requêtes optimisées !**
 
+

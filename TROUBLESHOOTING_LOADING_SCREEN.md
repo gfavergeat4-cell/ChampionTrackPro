@@ -158,3 +158,4 @@ npx expo start --web --clear
 
 L'écran de chargement ne devrait plus rester bloqué ! 🎉
 
+

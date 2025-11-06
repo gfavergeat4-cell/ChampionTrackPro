@@ -306,3 +306,4 @@ const showSidebar = shouldShowSidebar(device);
 - Espacement: 32px
 - Police: 20px
 
+

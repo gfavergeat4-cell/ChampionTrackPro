@@ -120,3 +120,4 @@ L'écran Schedule devrait afficher vos 3 entraînements du jeudi avec les heures
 
 **Une fois ces étapes suivies, vos événements devraient s'afficher correctement dans l'écran Schedule !** 🚀
 
+
